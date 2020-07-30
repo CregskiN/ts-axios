@@ -10,4 +10,8 @@ module.exports = {
         'plugin:@typescript-eslint/recommended',
         'prettier/@typescript-eslint',
     ],
+    rules: {
+        semi: 'error',
+        "no-explicit-any": 'off'
+    }
 };
