@@ -27,3 +27,9 @@ Conventional changelog # 通过代码提交信息自动生成 change log
 5. 忽略 null undefined
 6. 丢弃哈希标记 #
 7. 保留 url 已有参数
+
+### 2. 异常处理
+
+1. 网络错误 Network Error
+2. 处理超时错误 Timeout xx ms is exceeded
+3. 处理非 200 状态码

@@ -119,6 +119,7 @@ function registerExtendRouter () {
   })
 
   router.put('/extend/put', function(req, res) {
+    console.log('put');
     res.json(req.body)
   })
 

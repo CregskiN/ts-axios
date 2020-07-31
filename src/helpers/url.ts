@@ -1,4 +1,4 @@
-import { isDate, isObject } from './util';
+import { isDate, isPlainObject } from './util';
 
 function encode(val: string): string {
   return encodeURIComponent(val)
@@ -8,7 +8,7 @@ function encode(val: string): string {
     .replace(/%2C/g, ',')
     .replace(/%20/g, '+')
     .replace(/%5B/gi, '[')
-    .replace(/5D/gi, ']');
+    .replace(/%5D/gi, ']');
 }
 
 /**
@@ -41,7 +41,7 @@ export function bindURL(url: string, params?: any): string {
           if (isDate(val)) {
             // 如果是 Date 类型
             val = val.toISOString();
-          } else if (isObject(val)) {
+          } else if (isPlainObject(val)) {
             // 如果是 Object 类型
             val = JSON.stringify(val); // 自动忽略 undefined
           }

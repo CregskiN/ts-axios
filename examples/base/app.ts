@@ -1,5 +1,6 @@
-import axios from '../../src/index'
+import axios from '../../src/index';
 
+// // 以数组为参数
 // axios({
 //   method: 'get',
 //   url: '/base/get',
@@ -7,7 +8,8 @@ import axios from '../../src/index'
 //     foo: ['bar', 'baz']
 //   }
 // })
-//
+
+// // 对象
 // axios({
 //   method: 'get',
 //   url: '/base/get',
@@ -17,9 +19,10 @@ import axios from '../../src/index'
 //     }
 //   }
 // })
-//
+
+// // Date
 // const date = new Date()
-//
+
 // axios({
 //   method: 'get',
 //   url: '/base/get',
@@ -27,7 +30,8 @@ import axios from '../../src/index'
 //     date
 //   }
 // })
-//
+
+// // 特殊字符
 // axios({
 //   method: 'get',
 //   url: '/base/get',
@@ -35,7 +39,8 @@ import axios from '../../src/index'
 //     foo: '@:$, '
 //   }
 // })
-//
+
+// // null
 // axios({
 //   method: 'get',
 //   url: '/base/get',
@@ -44,7 +49,8 @@ import axios from '../../src/index'
 //     baz: null
 //   }
 // })
-//
+
+// // 丢弃哈希
 // axios({
 //   method: 'get',
 //   url: '/base/get#hash',
@@ -52,7 +58,8 @@ import axios from '../../src/index'
 //     foo: 'bar'
 //   }
 // })
-//
+
+// // 保留已有 query
 // axios({
 //   method: 'get',
 //   url: '/base/get?foo=bar',
@@ -60,7 +67,7 @@ import axios from '../../src/index'
 //     bar: 'baz'
 //   }
 // })
-//
+
 // axios({
 //   method: 'post',
 //   url: '/base/post',
@@ -69,7 +76,7 @@ import axios from '../../src/index'
 //     b: 2
 //   }
 // })
-//
+
 // axios({
 //   method: 'post',
 //   url: '/base/post',
@@ -81,19 +88,19 @@ import axios from '../../src/index'
 //     b: 2
 //   }
 // })
-//
+
 // const arr = new Int32Array([21, 31])
-//
+
 // axios({
 //   method: 'post',
 //   url: '/base/buffer',
 //   data: arr
 // })
-//
-//
+
+
 // const paramsString = 'q=URLUtils.searchParams&topic=api'
 // const searchParams = new URLSearchParams(paramsString)
-//
+
 // axios({
 //   method: 'post',
 //   url: '/base/post',

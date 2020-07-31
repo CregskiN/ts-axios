@@ -1,9 +1,4 @@
-import { AxiosRequestConfig } from './types';
-import xhr from './xhr';
-
-function axios(config: AxiosRequestConfig): void {
-  // TODO:
-  xhr(config);
-}
+import axios from './axios';
+export * from './types';
 
 export default axios;
