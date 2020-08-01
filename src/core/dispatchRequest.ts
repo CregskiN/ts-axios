@@ -1,7 +1,7 @@
 import xhr from '../xhr';
 import { bindURL } from '../helpers/url';
 import { transformRequest, transformResponse } from '../helpers/data';
-import { processHeaders } from '../helpers/headers';
+import { processHeaders, flattenHeaders } from '../helpers/headers';
 
 import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from '../types';
 
@@ -12,8 +12,10 @@ import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from '../types';
  * @param config
  */
 export default function dispatchRequest(config: AxiosRequestConfig): AxiosPromise {
-  processConfig(config);
-  return xhr(config).then((res) => transformResponseData(res));
+    processConfig(config);
+    return xhr(config).then((res) => {
+        return transformResponseData(res);
+    });
 }
 
 /**
@@ -21,17 +23,18 @@ export default function dispatchRequest(config: AxiosRequestConfig): AxiosPromis
  * @param config
  */
 function processConfig(config: AxiosRequestConfig): void {
-  config.url = transformURL(config);
-  config.headers = transformHeaders(config); // 先处理 headers 再处理 data
-  config.data = transformData(config);
+    config.url = transformURL(config);
+    config.headers = transformHeaders(config); // 先处理 headers 再处理 data
+    config.data = transformData(config);
+    config.headers = flattenHeaders(config.headers, config.method!);
 }
 
 /**
  * 转化 config 中 URL 和 params
  */
 function transformURL(config: AxiosRequestConfig): string {
-  const { url, params } = config;
-  return bindURL(url, params);
+    const { url, params } = config;
+    return bindURL(url, params);
 }
 
 /**
@@ -39,8 +42,8 @@ function transformURL(config: AxiosRequestConfig): string {
  * @param config
  */
 function transformData(config: AxiosRequestConfig): any {
-  const { data } = config;
-  return transformRequest(data);
+    const { data } = config;
+    return transformRequest(data);
 }
 
 /**
@@ -48,11 +51,11 @@ function transformData(config: AxiosRequestConfig): any {
  * @param config
  */
 function transformHeaders(config: AxiosRequestConfig): any {
-  const { headers = {}, data } = config;
-  return processHeaders(headers, data);
+    const { headers = {}, data } = config;
+    return processHeaders(headers, data);
 }
 
 function transformResponseData(res: AxiosResponse): AxiosResponse {
-  res.data = transformResponse(res.data);
-  return res;
+    res.data = transformResponse(res.data);
+    return res;
 }
