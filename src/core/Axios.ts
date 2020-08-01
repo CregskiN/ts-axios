@@ -23,7 +23,7 @@ interface PromiseChain<T> {
 
 // 策略模式
 export default class implements Axios {
-  interceptors: Interceptor;
+  public interceptors: Interceptor;
 
   constructor() {
     this.interceptors = {
@@ -51,17 +51,17 @@ export default class implements Axios {
 
     const chain: PromiseChain<any>[] = [
       {
-        resolved: dispatchRequest,
+        resolved: dispatchRequest, // xhr
         rejected: undefined,
       },
     ];
 
     this.interceptors.request.forEach((interceptor) => {
-      chain.unshift(interceptor);
+      chain.unshift(interceptor); // 放到 xhr 之前，先加 use 后执行
     });
 
     this.interceptors.response.forEach((interceptor) => {
-      chain.push(interceptor);
+      chain.push(interceptor); // 放到 xhr 之后，先 use 先执行
     });
 
     let promise = Promise.resolve(config);
@@ -114,7 +114,7 @@ export default class implements Axios {
     return this._requestMethodWithData(url, 'patch', data, config);
   }
 
-  _requestMethodWithoutData(
+  private _requestMethodWithoutData(
     url: string,
     method: Method,
     config?: Omit<AxiosRequestConfig, 'url' | 'method'>
@@ -127,7 +127,7 @@ export default class implements Axios {
     );
   }
 
-  _requestMethodWithData(
+  private _requestMethodWithData(
     url: string,
     method: Method,
     data: any,
