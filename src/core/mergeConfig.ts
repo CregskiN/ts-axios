@@ -54,6 +54,11 @@ stratKeysDeepMerge.forEach((key) => {
     strats[key] = deepMergeStrat;
 });
 
+/**
+ * 策略模式合并
+ * @param config1
+ * @param config2
+ */
 export default function mergeConfig(
     config1: AxiosRequestConfig,
     config2?: AxiosRequestConfig

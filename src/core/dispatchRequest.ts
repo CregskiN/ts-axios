@@ -1,7 +1,7 @@
 import xhr from '../xhr';
 import { bindURL } from '../helpers/url';
-import { transformRequest, transformResponse } from '../helpers/data';
-import { processHeaders, flattenHeaders } from '../helpers/headers';
+import { flattenHeaders } from '../helpers/headers';
+import transform from '../core/transform';
 
 import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from '../types';
 
@@ -12,6 +12,7 @@ import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from '../types';
  * @param config
  */
 export default function dispatchRequest(config: AxiosRequestConfig): AxiosPromise {
+    throwIfCancellationRequested(config);
     processConfig(config);
     return xhr(config).then((res) => {
         return transformResponseData(res);
@@ -24,8 +25,9 @@ export default function dispatchRequest(config: AxiosRequestConfig): AxiosPromis
  */
 function processConfig(config: AxiosRequestConfig): void {
     config.url = transformURL(config);
-    config.headers = transformHeaders(config); // 先处理 headers 再处理 data
-    config.data = transformData(config);
+    config.data = transform(config.data, config.headers, config.transformRequest);
+    // config.headers = transformHeaders(config); // 先处理 headers 再处理 data
+    // config.data = transformData(config);
     config.headers = flattenHeaders(config.headers, config.method!);
 }
 
@@ -37,25 +39,37 @@ function transformURL(config: AxiosRequestConfig): string {
     return bindURL(url, params);
 }
 
-/**
- * 转化 config 中 body
- * @param config
- */
-function transformData(config: AxiosRequestConfig): any {
-    const { data } = config;
-    return transformRequest(data);
-}
+// /**
+//  * 转化 config 中 body
+//  * @param config
+//  */
+// function transformData(config: AxiosRequestConfig): any {
+//     const { data } = config;
+//     return transformRequest(data);
+// }
+
+// /**
+//  * 转化 config 中 headers
+//  * @param config
+//  */
+// function transformHeaders(config: AxiosRequestConfig): any {
+//     const { headers = {}, data } = config;
+//     return processHeaders(headers, data);
+// }
 
 /**
- * 转化 config 中 headers
- * @param config
+ * 对响应数据做处理
+ * @param res
  */
-function transformHeaders(config: AxiosRequestConfig): any {
-    const { headers = {}, data } = config;
-    return processHeaders(headers, data);
-}
-
 function transformResponseData(res: AxiosResponse): AxiosResponse {
-    res.data = transformResponse(res.data);
+    // res.data = transformResponse(res.data);
+    res.data = transform(res.data, res.headers, res.config.transformResponse);
     return res;
+}
+
+/** */
+function throwIfCancellationRequested(config: AxiosRequestConfig): void {
+    if (config.cancelToken) {
+        config.cancelToken.throwIfRequested();
+    }
 }

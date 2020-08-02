@@ -19,6 +19,7 @@ setTimeout(() => {
     axios.post('/cancel/post', {
       a: 1
     }, {
+      /* 已经被使用的 token */
       cancelToken: source.token
     }).catch(e => {
       if (axios.isCancel(e)) {

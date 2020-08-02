@@ -1,7 +1,8 @@
 import { parseHeaders } from './helpers/headers';
 import { createError } from './helpers/error';
 
-import { AxiosRequestConfig, AxiosPromise, AxiosResponse, AxiosError } from './types';
+import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from './types';
+import { request } from 'http';
 
 /**
  * axios web端 http 核心
@@ -9,7 +10,15 @@ import { AxiosRequestConfig, AxiosPromise, AxiosResponse, AxiosError } from './t
  */
 export default function xhr(config: AxiosRequestConfig): AxiosPromise {
     return new Promise((resolve, reject) => {
-        const { data = null, url, method = 'get', headers = {}, responseType, timeout } = config;
+        const {
+            data = null,
+            url,
+            method = 'get',
+            headers = {},
+            responseType,
+            timeout,
+            cancelToken,
+        } = config;
 
         const xhr = new XMLHttpRequest();
 
@@ -60,6 +69,14 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
                 xhr.setRequestHeader(name, headers[name]);
             }
         });
+
+        if (cancelToken) {
+            cancelToken.promise.then((reason) => {
+                xhr.abort();
+                reject(reason);
+            });
+        }
+
         xhr.send(data);
 
         /**

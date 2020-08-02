@@ -22,6 +22,9 @@ export interface AxiosRequestConfig {
     headers?: any;
     responseType?: XMLHttpRequestResponseType;
     timeout?: number;
+    transformRequest?: AxiosTransformer | AxiosTransformer[];
+    transformResponse?: AxiosTransformer | AxiosTransformer[];
+    cancelToken?: CancelToken;
 }
 
 export interface AxiosResponse<T = any> {
@@ -101,4 +104,58 @@ export interface RejectedFn {
 export interface AxiosInterceptorManager<T> {
     use(resovled: ResolvedFn<T>, rejected?: RejectedFn): number;
     eject(id: number): void;
+}
+
+// TODO:增加泛型支持
+export interface AxiosTransformer {
+    (data: any, headers?: any): any;
+}
+
+/**
+ * axios. Axios 类类型
+ */
+export interface AxiosStatic extends AxiosInstance {
+    create(config?: Partial<AxiosRequestConfig>): AxiosInstance;
+    CancelToken: CancelTokenStatic;
+    Cancel: CancelStatic;
+    isCancel: (val: any) => boolean;
+}
+
+/**
+ * CancelToken 的实例类型
+ */
+export interface CancelToken {
+    promise: Promise<Cancel>;
+    reason?: Cancel;
+    /* 若canceltoken已被使用，则不用发出request抛出错误 */
+    throwIfRequested(): void;
+}
+
+export interface Canceler {
+    (message?: string): void;
+}
+
+export interface CancelExecutor {
+    (cancel: Canceler): void;
+}
+
+export interface CancelTokenSource {
+    token: CancelToken;
+    cancel: Canceler;
+}
+
+/**
+ * CancelToken 的类类型，包含静态方法和构造函数
+ */
+export interface CancelTokenStatic {
+    new (executor: CancelExecutor): CancelToken;
+    source(): CancelTokenSource;
+}
+
+export interface Cancel {
+    message?: string;
+}
+
+export interface CancelStatic {
+    new (message?: string): Cancel;
 }
