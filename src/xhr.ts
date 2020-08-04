@@ -1,8 +1,9 @@
 import { parseHeaders } from './helpers/headers';
 import { createError } from './helpers/error';
+import cookie from './helpers/cookie';
 
 import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from './types';
-import { request } from 'http';
+import { isSameOriginURL } from './helpers/url';
 
 /**
  * axios web端 http 核心
@@ -18,6 +19,9 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
             responseType,
             timeout,
             cancelToken,
+            withCredentials,
+            xsrfCookieName,
+            xsrfHeaderName,
         } = config;
 
         const xhr = new XMLHttpRequest();
@@ -29,6 +33,10 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
 
         if (timeout) {
             xhr.timeout = timeout;
+        }
+
+        if (withCredentials) {
+            xhr.withCredentials = withCredentials;
         }
 
         xhr.open(method, url, true);
@@ -61,6 +69,19 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
         xhr.ontimeout = function handleTimeout() {
             reject(createError(`Timeout of ${timeout} is exceeded`, config, 'ECONNABORTED', xhr));
         };
+
+        /**
+         * 对于同源或添加了withCredentials属性的request
+         * 1. 读出cookie值
+         * 2. 将cookie的值添加到header中xsrfHeaderName字段
+         */
+        if ((withCredentials || isSameOriginURL(url)) && xsrfCookieName) {
+            const xsrfValue = cookie.read(xsrfCookieName);
+            if (xsrfValue && xsrfHeaderName) {
+                headers[xsrfHeaderName] = xsrfValue;
+            }
+        }
+
         Object.keys(headers).forEach((name) => {
             if (data === null && name.toLowerCase() === 'content-type') {
                 // 当未传 data，且

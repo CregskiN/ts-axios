@@ -5,6 +5,12 @@ interface ResolvePromise {
     (reason?: Cancel): void;
 }
 
+/**
+ * 使用Promise实现异步分离
+ * 1. new 阶段，Promise 处于pendding
+ * 2. source() 获取cancel
+ * 3. cancel() 使pendding变为rejecting
+ */
 export default class CancelToken {
     promise: Promise<Cancel>;
     reason?: Cancel;
@@ -16,21 +22,6 @@ export default class CancelToken {
             resolvePromise = resolve;
         });
 
-        /* 
-        const CancelToken = axios.CancelToken;
-        let cancel;
-        axios.get('/user/12345', {
-            cancelToken: new CancelToken(function executor(c) {
-                cancel = c;
-            })
-        });
-        // 取消请求
-        cancel();     
-        */
-        /**
-         * 使用 Promise 实现异步分离
-         * // TODO: 多看
-         */
         executor((message) => {
             if (this.reason) {
                 return;
@@ -40,17 +31,25 @@ export default class CancelToken {
         });
     }
 
+    /**
+     * 获取 token 和 cancel
+     * token: 记录cancel使用情况
+     * calcen: 改变token状态的函数
+     */
     static source(): CancelTokenSource {
         let cancel!: Canceler;
-        const token = new CancelToken((c) => {
-            cancel = c;
+        const token = new CancelToken(function executor(c) {
+            cancel = c; // if(this.reason){return} this.rea....
         });
         return {
             token,
-            cancel,
+            cancel, // 对于未使用的cancel()，则调用xhr.abort()
         };
     }
 
+    /**
+     * 如果token已被使用，停止发送request，并抛出异常
+     */
     throwIfRequested() {
         if (this.reason) {
             throw this.reason;
