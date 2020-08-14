@@ -51,57 +51,57 @@ import qs from 'qs'
 // })
 
 // // 自定义合法状态码 demo
-axios.get('/more/304').then(res => {
+// axios.get('/more/304').then(res => {
+//   console.log(res)
+// }).catch(err => {
+//   console.log(err)
+// })
+
+
+// axios.get('/more/304', {
+//   validateStatus(status) {
+//     return status >= 200 && status < 400
+//   }
+// }).then(res => {
+//   console.log(res)
+// }).catch(err => {
+//   console.log(err)
+// })
+
+// // 自定义 params 的解析规则 demo
+axios.get('/more/get', {
+  params: new URLSearchParams('a=b&c=d')
+}).then(res => {
   console.log(res)
-}).catch(err => {
-  console.log(err)
 })
 
-
-axios.get('/more/304', {
-  validateStatus(status) {
-    return status >= 200 && status < 400
+axios.get('/more/get', {
+  params: {
+    a: 1,
+    b: 2,
+    c: ['a', 'b', 'c']
   }
 }).then(res => {
   console.log(res)
-}).catch(err => {
-  console.log(err)
 })
 
-// // 自定义 params 的解析规则 demo
-// axios.get('/more/get', {
-//   params: new URLSearchParams('a=b&c=d')
-// }).then(res => {
-//   console.log(res)
-// })
+const instance2 = axios.create({
+  paramsSerializer(params) {
+    return qs.stringify(params, {
+      arrayFormat: 'brackets'
+    })
+  }
+})
 
-// axios.get('/more/get', {
-//   params: {
-//     a: 1,
-//     b: 2,
-//     c: ['a', 'b', 'c']
-//   }
-// }).then(res => {
-//   console.log(res)
-// })
-
-// const instance2 = axios.create({
-//   paramsSerializer(params) {
-//     return qs.stringify(params, {
-//       arrayFormat: 'brackets'
-//     })
-//   }
-// })
-
-// instance2.get('/more/get', {
-//   params: {
-//     a: 1,
-//     b: 2,
-//     c: ['a', 'b', 'c']
-//   }
-// }).then(res => {
-//   console.log(res)
-// })
+instance2.get('/more/get', {
+  params: {
+    a: 1,
+    b: 2,
+    c: ['a', 'b', 'c']
+  }
+}).then(res => {
+  console.log(res)
+})
 
 // // custom baseURL demo
 // const instance3 = axios.create({

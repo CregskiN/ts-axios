@@ -26,8 +26,6 @@ export default function dispatchRequest(config: AxiosRequestConfig): AxiosPromis
 function processConfig(config: AxiosRequestConfig): void {
     config.url = transformURL(config);
     config.data = transform(config.data, config.headers, config.transformRequest);
-    // config.headers = transformHeaders(config); // 先处理 headers 再处理 data
-    // config.data = transformData(config);
     config.headers = flattenHeaders(config.headers, config.method!);
 }
 
@@ -35,27 +33,9 @@ function processConfig(config: AxiosRequestConfig): void {
  * 转化 config 中 URL 和 params
  */
 function transformURL(config: AxiosRequestConfig): string {
-    const { url, params } = config;
-    return bindURL(url, params);
+    const { url, params, paramsSerializer } = config;
+    return bindURL(url, params, paramsSerializer);
 }
-
-// /**
-//  * 转化 config 中 body
-//  * @param config
-//  */
-// function transformData(config: AxiosRequestConfig): any {
-//     const { data } = config;
-//     return transformRequest(data);
-// }
-
-// /**
-//  * 转化 config 中 headers
-//  * @param config
-//  */
-// function transformHeaders(config: AxiosRequestConfig): any {
-//     const { headers = {}, data } = config;
-//     return processHeaders(headers, data);
-// }
 
 /**
  * 对响应数据做处理

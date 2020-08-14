@@ -33,6 +33,14 @@ export function isFromData(val: any): val is FormData {
 }
 
 /**
+ * 判断是否是 URLSearchParams，用于验证自定义解析规则是否法
+ * @param val
+ */
+export function isURLSearchParams(val: any): val is URLSearchParams {
+    return typeof val !== 'undefined' && val instanceof URLSearchParams;
+}
+
+/**
  * 实现混合类型。将 U 中的方法、属性复制到 T 中
  */
 export function extend<T, U>(to: T, from: U): T & U {
