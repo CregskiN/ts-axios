@@ -25,6 +25,14 @@ export function isPlainObject(val: any): val is Record<string, any> {
 }
 
 /**
+ * 判断是否是 FormDta，用于上传/下载逻辑
+ * @param val
+ */
+export function isFromData(val: any): val is FormData {
+    return typeof val !== 'undefined' && val instanceof FormData;
+}
+
+/**
  * 实现混合类型。将 U 中的方法、属性复制到 T 中
  */
 export function extend<T, U>(to: T, from: U): T & U {
